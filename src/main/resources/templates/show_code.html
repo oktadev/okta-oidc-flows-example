@@ -1,0 +1,33 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <!--/*/ <th:block th:include="fragments/head :: head"/> /*/-->
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="box col-md-6 col-md-offset-3">
+                    <div class="okta-header">
+                        <img width="300px" src="/images/OktaLogo.png"/>
+                    </div>
+                    <p/>
+                    <form class="form-horizontal" method="POST" action="/code">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="code">Code</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control build-code-url" name="code" id="code" placeholder="code" th:value="${code}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="state">state</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control build-code-url" name="state" id="state" placeholder="state" th:value="${state}"/>
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Exchange Code for Tokens"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/*/ <th:block th:include="fragments/scripts :: foot"/> /*/-->
+    </body>
+</html>

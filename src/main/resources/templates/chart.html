@@ -1,0 +1,74 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <!--/*/ <th:block th:include="fragments/head :: head"/> /*/-->
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="box col-md-6 col-md-offset-3">
+                    <div class="okta-header">
+                        <img width="300px" src="/images/OktaLogo.png"/>
+                    </div>
+                    <p/>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="response_type">response_type</label>
+                            <div class="col-md-6" id="response_type" style="text-align: left">
+                                <button type="button" class="btn btn-default btn-lg response-type">
+                                    <span id="code" class="glyphicon glyphicon-ok" aria-hidden="true"></span> code
+                                </button>
+                                <button type="button" class="btn btn-default btn-lg response-type">
+                                    <span id="id_token" class="glyphicon glyphicon-remove" aria-hidden="true"></span> id_token
+                                </button>
+                                <button type="button" class="btn btn-default btn-lg response-type">
+                                    <span id="token" class="glyphicon glyphicon-remove" aria-hidden="true"></span> token
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="scope">scope</label>
+                            <div class="col-md-9" id="scope" style="text-align: left">
+                                <button type="button" class="btn btn-default btn-lg">
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> openid
+                                </button>
+                                <button type="button" class="btn btn-default btn-lg scope">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> profile
+                                </button>
+                                <button type="button" class="btn btn-default btn-lg scope">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> email
+                                </button>
+                                <button type="button" class="btn btn-default btn-lg scope">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> address
+                                </button>
+                                <button type="button" class="btn btn-default btn-lg scope">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> phone
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="flow-type">Flow Type:</label>
+                            <div class="col-md-6" id="flow-type" style="text-align: left">
+                                <button type="button" id="code-type" class="btn btn-default btn-primary btn-lg">code</button>
+                                <button type="button" id="implicit-type" class="btn btn-default btn-lg">implicit</button>
+                                <button type="button" id="hybrid-type" class="btn btn-default btn-lg">hybrid</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="response">Response:</label>
+                            <div class="col-md-6" id="response" style="text-align: left">
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/*/ <th:block th:include="fragments/scripts :: common"/> /*/-->
+        <!--/*/ <th:block th:include="fragments/scripts :: chart"/> /*/-->
+    </body>
+</html>

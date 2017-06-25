@@ -1,0 +1,103 @@
+<div th:fragment="common" xmlns:th="http://www.thymeleaf.org">
+    <script>
+    /*<![CDATA[*/
+        $(document).ready(function () {
+            codeUrlBuilder = function () {
+                var codeUrl = 'https://' + $('#okta_org').val() + '/oauth2/' + $('#auth_server_id').val() +
+                    '/v1/authorize?client_id=' + $('#oidc_client_id').val() + '&response_type=code&scope=openid&' +
+                    'state=' + $('#state').val() + '&redirect_uri=' + $('#redirect_uri').val();
+                $('#code_url').attr('href', codeUrl);
+                $('#code_url').text(codeUrl);
+
+                // update on server
+                $.ajax({
+                    url: '/update_config',
+                    type: 'PUT',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        'okta.oidc.client.id': $('#oidc_client_id').val(),
+                        'okta.authorizationServer.id': $('#auth_server_id').val(),
+                        'okta.org': $('#okta_org').val(),
+                        'redirect.uri': $('#redirect_uri').val()
+                    }),
+                    dataType: 'json'
+                });
+            };
+
+            getFlowType = function () {
+                var isCode = $('#code').hasClass('glyphicon-ok');
+                var isIdToken = $('#id_token').hasClass('glyphicon-ok');
+                var isToken = $('#token').hasClass('glyphicon-ok');
+
+                var flowType = '';
+                if (isCode && (isIdToken || isToken)) {
+                    flowType = 'hybrid';
+                } else if (isCode) {
+                    flowType = 'code';
+                } else if (isIdToken || isToken) {
+                    flowType = 'implicit';
+                } else {
+                    flowType = 'none_selected';
+                }
+                return flowType;
+            };
+
+            buttonToggle = function (e) {
+                var target = e.currentTarget.firstElementChild;
+                if ($(target).hasClass('glyphicon-ok')) {
+                    $(target).removeClass('glyphicon-ok');
+                    $(target).addClass('glyphicon-remove');
+                } else if ($(target).hasClass('glyphicon-remove')) {
+                    $(target).removeClass('glyphicon-remove');
+                    $(target).addClass('glyphicon-ok');
+                }
+            };
+        });
+    /*]]>*/
+    </script>
+</div>
+
+<div th:fragment="home" xmlns:th="http://www.thymeleaf.org">
+    <script>
+        /*<![CDATA[*/
+            $(document).ready(function () {
+                var flowTypeHandler = function (e) {
+                    buttonToggle(e);
+                    var flowType = getFlowType();
+                    $('#flow-type-label').html('Flow Type: ' + flowType);
+                };
+                $('.response-type').click(flowTypeHandler);
+                $('.scope').click(buttonToggle);
+
+                $('.build-code-url').keyup(codeUrlBuilder);
+                codeUrlBuilder();
+            });
+        /*]]>*/
+    </script>
+</div>
+
+
+<div th:fragment="chart" xmlns:th="http://www.thymeleaf.org">
+    <script>
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            var flowTypeHandler = function (e) {
+                buttonToggle(e);
+
+                var flowTypes = ['code', 'implicit', 'hybrid'];
+                flowTypes.forEach(function (localFlowType) {
+                    $('#' + localFlowType + '-type').removeClass('btn-primary');
+                });
+
+                var flowType = getFlowType();
+                var flowIdx = flowTypes.indexOf(flowType);
+                if (flowIdx >= 0) {
+                    $('#' + flowType + '-type').addClass('btn-primary');
+                }
+            };
+            $('.response-type').click(flowTypeHandler);
+            $('.scope').click(buttonToggle);
+        });
+        /*]]>*/
+    </script>
+</div>
