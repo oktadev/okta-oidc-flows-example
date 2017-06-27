@@ -13,14 +13,14 @@
                     <form class="form-horizontal">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="response_type">response_type</label>
-                            <div class="col-md-6" id="response_type" style="text-align: left">
-                                <button type="button" class="btn btn-default btn-lg response-type">
+                            <div class="col-md-9" id="response_type" style="text-align: left">
+                                <button type="button" class="btn btn-default btn-md response-type">
                                     <span id="code" class="glyphicon glyphicon-ok" aria-hidden="true"></span> code
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg response-type">
+                                <button type="button" class="btn btn-default btn-md response-type">
                                     <span id="id_token" class="glyphicon glyphicon-remove" aria-hidden="true"></span> id_token
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg response-type">
+                                <button type="button" class="btn btn-default btn-md response-type">
                                     <span id="token" class="glyphicon glyphicon-remove" aria-hidden="true"></span> token
                                 </button>
                             </div>
@@ -29,19 +29,19 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="scope">scope</label>
                             <div class="col-md-9" id="scope" style="text-align: left">
-                                <button type="button" class="btn btn-default btn-lg">
+                                <button type="button" class="btn btn-default btn-md">
                                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> openid
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg scope">
+                                <button type="button" class="btn btn-default btn-md scope">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> profile
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg scope">
+                                <button type="button" class="btn btn-default btn-md scope">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> email
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg scope">
+                                <button type="button" class="btn btn-default btn-md scope">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> address
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg scope">
+                                <button type="button" class="btn btn-default btn-md scope">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> phone
                                 </button>
                             </div>
@@ -52,15 +52,29 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="flow-type">Flow Type:</label>
                             <div class="col-md-6" id="flow-type" style="text-align: left">
-                                <button type="button" id="code-type" class="btn btn-default btn-primary btn-lg">code</button>
-                                <button type="button" id="implicit-type" class="btn btn-default btn-lg">implicit</button>
-                                <button type="button" id="hybrid-type" class="btn btn-default btn-lg">hybrid</button>
+                                <button type="button" id="code-type" class="btn btn-default btn-primary btn-md">code</button>
+                                <button type="button" id="implicit-type" class="btn btn-default btn-md">implicit</button>
+                                <button type="button" id="hybrid-type" class="btn btn-default btn-md">hybrid</button>
                             </div>
                         </div>
 
+                        <h3>Response</h3>
+
                         <div class="form-group">
-                            <label class="col-md-3 control-label" for="response">Response:</label>
-                            <div class="col-md-6" id="response" style="text-align: left">
+                            <label class="col-md-3 control-label" for="code-response">Code:</label>
+                            <div class="col-md-6" id="code-response" style="text-align: left">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="id-token-response">ID Token:</label>
+                            <div class="col-md-6" id="id-token-response" style="text-align: left">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="access-token-response">ID Token:</label>
+                            <div class="col-md-6" id="access-token-response" style="text-align: left">
 
                             </div>
                         </div>

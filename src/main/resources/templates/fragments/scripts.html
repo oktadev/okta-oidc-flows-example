@@ -2,28 +2,6 @@
     <script>
     /*<![CDATA[*/
         $(document).ready(function () {
-            codeUrlBuilder = function () {
-                var codeUrl = 'https://' + $('#okta_org').val() + '/oauth2/' + $('#auth_server_id').val() +
-                    '/v1/authorize?client_id=' + $('#oidc_client_id').val() + '&response_type=code&scope=openid&' +
-                    'state=' + $('#state').val() + '&redirect_uri=' + $('#redirect_uri').val();
-                $('#code_url').attr('href', codeUrl);
-                $('#code_url').text(codeUrl);
-
-                // update on server
-                $.ajax({
-                    url: '/update_config',
-                    type: 'PUT',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify({
-                        'okta.oidc.client.id': $('#oidc_client_id').val(),
-                        'okta.authorizationServer.id': $('#auth_server_id').val(),
-                        'okta.org': $('#okta_org').val(),
-                        'redirect.uri': $('#redirect_uri').val()
-                    }),
-                    dataType: 'json'
-                });
-            };
-
             getFlowType = function () {
                 var isCode = $('#code').hasClass('glyphicon-ok');
                 var isIdToken = $('#id_token').hasClass('glyphicon-ok');
@@ -42,14 +20,62 @@
                 return flowType;
             };
 
+            codeUrlBuilder = function () {
+                var responseType =
+                    ($('#code').hasClass('glyphicon-ok')?'code+':'') +
+                    ($('#id_token').hasClass('glyphicon-ok')?'id_token+':'') +
+                    ($('#token').hasClass('glyphicon-ok')?'token+':'');
+                if (responseType.endsWith('+')) {
+                    responseType = responseType.substring(0, responseType.length - 1);
+                }
+
+                var scope = 'openid' +
+                    ($('#profile').hasClass('glyphicon-ok')?'+profile':'') +
+                    ($('#email').hasClass('glyphicon-ok')?'+email':'') +
+                    ($('#address').hasClass('glyphicon-ok')?'+address':'') +
+                    ($('#phone').hasClass('glyphicon-ok')?'+phone':'');
+
+                var codeUrlParts = [];
+                codeUrlParts.push('https://' + $('#okta_org').val() + '/oauth2/');
+                codeUrlParts.push($('#auth_server_id').val() + '/v1/authorize?');
+                codeUrlParts.push('client_id=' + $('#oidc_client_id').val() + '&');
+                codeUrlParts.push('response_type=' + responseType + '&');
+                codeUrlParts.push('scope=' + scope + '&');
+                codeUrlParts.push('state=' + $('#state').val() + '&');
+                codeUrlParts.push('nonce=' + $('#nonce').val() + '&');
+                codeUrlParts.push('redirect_uri=' + encodeURIComponent($('#redirect_uri').html()));
+
+                $('#code_url').attr('href', codeUrlParts.join(''));
+                $('#code_url').html(codeUrlParts.join('<br/>'));
+
+                var flowType = getFlowType();
+
+                // update on server
+                $.ajax({
+                    url: '/update_config',
+                    type: 'PUT',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({
+                        'okta.oidc.client.id': $('#oidc_client_id').val(),
+                        'okta.authorizationServer.id': $('#auth_server_id').val(),
+                        'okta.org': $('#okta_org').val(),
+                        'redirect.uri': $('#redirect_uri').html()
+                    }),
+                    dataType: 'json'
+                });
+            };
+
             buttonToggle = function (e) {
-                var target = e.currentTarget.firstElementChild;
-                if ($(target).hasClass('glyphicon-ok')) {
-                    $(target).removeClass('glyphicon-ok');
-                    $(target).addClass('glyphicon-remove');
-                } else if ($(target).hasClass('glyphicon-remove')) {
-                    $(target).removeClass('glyphicon-remove');
-                    $(target).addClass('glyphicon-ok');
+                var target = e.currentTarget;
+                var child = target.firstElementChild;
+                if ($(child).hasClass('glyphicon-ok')) {
+                    $(child).removeClass('glyphicon-ok');
+                    $(child).addClass('glyphicon-remove');
+                    $(target).removeClass('btn-primary');
+                } else if ($(child).hasClass('glyphicon-remove')) {
+                    $(child).removeClass('glyphicon-remove');
+                    $(child).addClass('glyphicon-ok');
+                    $(target).addClass('btn-primary');
                 }
             };
         });
@@ -61,20 +87,75 @@
     <script>
         /*<![CDATA[*/
             $(document).ready(function () {
+                $('.build-code-url').keyup(codeUrlBuilder);
+
                 var flowTypeHandler = function (e) {
                     buttonToggle(e);
+
+                    var flowTypes = ['code', 'implicit', 'hybrid'];
+                    flowTypes.forEach(function (localFlowType) {
+                        $('#' + localFlowType + '-type').parent().removeClass('bg-success');
+                        $('#' + localFlowType + '-type').removeClass('glyphicon-ok');
+                        $('#' + localFlowType + '-type').addClass('glyphicon-remove');
+                    });
+
                     var flowType = getFlowType();
-                    $('#flow-type-label').html('Flow Type: ' + flowType);
+                    var flowIdx = flowTypes.indexOf(flowType);
+                    if (flowIdx >= 0) {
+                        $('#' + flowType + '-type').parent().addClass('bg-success');
+                        $('#' + flowType + '-type').addClass('glyphicon-ok');
+                        $('#' + flowType + '-type').removeClass('glyphicon-remove');
+                        $('#redirect_uri').html([location.protocol, '//', location.host, location.pathname].join('') +  flowType);
+                    } else {
+                        $('#redirect_uri').html([location.protocol, '//', location.host, location.pathname].join(''));
+                    }
+
+                    codeUrlBuilder();
                 };
                 $('.response-type').click(flowTypeHandler);
-                $('.scope').click(buttonToggle);
+                $('.scope').click(function (e) {
+                    buttonToggle(e);
+                    codeUrlBuilder();
+                });
 
-                $('.build-code-url').keyup(codeUrlBuilder);
-                codeUrlBuilder();
+                // set redirect and url properly
+                $('#code').parent().click();
             });
         /*]]>*/
     </script>
 </div>
+
+<div th:fragment="show_code" xmlns:th="http://www.thymeleaf.org">
+    <script>
+        /*<![CDATA[*/
+        $(document).ready(function () {
+            var query = (location.search)?location.search:location.href.substring(location.href.indexOf('#')+1);
+            var urlParams = new URLSearchParams(query);
+
+            if (urlParams.get('code')) {
+                $('#code').val(urlParams.get('code'));
+                $('#code-section').show();
+            }
+
+            if (urlParams.get('id_token')) {
+                $('#id_token').val(urlParams.get('id_token'));
+                $('#id_token-section').show();
+            }
+
+            if (urlParams.get('access_token')) {
+                $('#access_token').val(urlParams.get('access_token'));
+                $('#access_token-section').show();
+            }
+
+            if (urlParams.get('state')) {
+                $('#state').val(urlParams.get('state'));
+                $('#state-section').show();
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+
 
 
 <div th:fragment="chart" xmlns:th="http://www.thymeleaf.org">

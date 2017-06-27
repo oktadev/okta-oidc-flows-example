@@ -1,0 +1,49 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <!--/*/ <th:block th:include="fragments/head :: head"/> /*/-->
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="box col-md-10 col-md-offset-1">
+                    <div class="okta-header">
+                        <img width="300px" src="/images/OktaLogo.png"/>
+                    </div>
+                    <p/>
+                    <form class="form-horizontal" method="POST" action="/code">
+                        <div class="form-group collapse" id="code-section">
+                            <label class="col-md-3 control-label" for="code">Code</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" name="code" id="code" placeholder="code"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group collapse" id="id_token-section">
+                            <label class="col-md-3 control-label" for="id_token">ID Token</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" rows="5" name="id_token" id="id_token" placeholder="id_token"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group collapse" id="access_token-section">
+                            <label class="col-md-3 control-label" for="access_token">Access Token</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" rows="5" name="id_token" id="access_token" placeholder="access_token"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group collapse" id="state-section">
+                            <label class="col-md-3 control-label" for="state">state</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control build-code-url" name="state" id="state" placeholder="state"/>
+                            </div>
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Verify and Decode Tokens"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--/*/ <th:block th:include="fragments/scripts :: common"/> /*/-->
+        <!--/*/ <th:block th:include="fragments/scripts :: show_code"/> /*/-->
+    </body>
+</html>

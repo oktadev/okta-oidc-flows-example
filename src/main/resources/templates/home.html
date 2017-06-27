@@ -5,64 +5,58 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="box col-md-6 col-md-offset-3">
+                <div class="box col-md-10 col-md-offset-1">
                     <div class="okta-header">
                         <img width="300px" src="/images/OktaLogo.png"/>
                     </div>
                     <p/>
-                    <div class="alert alert-info" role="alert">
-                        NOTE: If you want to use this site with your own settings, simply use the Deploy on Heroku button below.
-                        <br/>
-                        (You'll need to supply your own config values)
-                    </div>
+                    <!--<div class="alert alert-info" role="alert">-->
+                        <!--NOTE: If you want to use this site with your own settings, simply use the Deploy on Heroku button below.-->
+                        <!--<br/>-->
+                        <!--(You'll need to supply your own config values)-->
+                    <!--</div>-->
                     <form class="form-horizontal">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="okta_org">Okta Org</label>
-                            <div class="col-md-6">
+                            <div class="col-md-9">
                                 <input type="text" class="form-control build-code-url" id="okta_org" placeholder="Okta Org" th:value="${oktaOrg}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="auth_server_id">Authorization Server ID</label>
-                            <div class="col-md-6">
+                            <div class="col-md-9">
                                 <input type="text" class="form-control build-code-url" id="auth_server_id" placeholder="Authorization Server ID" th:value="${authorizationServerId}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="oidc_client_id">OIDC Client ID</label>
-                            <div class="col-md-6">
+                            <div class="col-md-9">
                                 <input type="text" class="form-control build-code-url" id="oidc_client_id" placeholder="OIDC Client ID" th:value="${oidcClientId}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="state">state</label>
-                            <div class="col-md-6">
+                            <div class="col-md-9">
                                 <input type="text" class="form-control build-code-url" id="state" placeholder="state" value="state"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="nonce">nonce</label>
-                            <div class="col-md-6">
+                            <div class="col-md-9">
                                 <input type="text" class="form-control build-code-url" id="nonce" placeholder="nonce" value="nonce"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="redirect_uri">redirect uri</label>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control build-code-url" id="redirect_uri" placeholder="redirect uri" th:value="${redirectUri}"/>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="response_type">response_type</label>
-                            <div class="col-md-6" id="response_type" style="text-align: left">
-                                <button type="button" class="btn btn-default btn-lg response-type">
-                                    <span id="code" class="glyphicon glyphicon-ok" aria-hidden="true"></span> code
+                            <div class="col-md-9" id="response_type" style="text-align: left">
+                                <button type="button" class="btn btn-default btn-md response-type">
+                                    <span id="code" class="glyphicon glyphicon-remove" aria-hidden="true"></span> code
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg response-type">
+                                <button type="button" class="btn btn-default btn-md response-type">
                                     <span id="id_token" class="glyphicon glyphicon-remove" aria-hidden="true"></span> id_token
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg response-type">
+                                <button type="button" class="btn btn-default btn-md response-type">
                                     <span id="token" class="glyphicon glyphicon-remove" aria-hidden="true"></span> token
                                 </button>
                             </div>
@@ -71,27 +65,43 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="scope">scope</label>
                             <div class="col-md-9" id="scope" style="text-align: left">
-                                <button type="button" class="btn btn-default btn-lg">
-                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> openid
+                                <button type="button" class="btn btn-default btn-primary btn-md">
+                                    <span id="openid" class="glyphicon glyphicon-ok" aria-hidden="true"></span> openid
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg scope">
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> profile
+                                <button type="button" class="btn btn-default btn-md scope">
+                                    <span id="profile" class="glyphicon glyphicon-remove" aria-hidden="true"></span> profile
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg scope">
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> email
+                                <button type="button" class="btn btn-default btn-md scope">
+                                    <span id="email" class="glyphicon glyphicon-remove" aria-hidden="true"></span> email
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg scope">
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> address
+                                <button type="button" class="btn btn-default btn-md scope">
+                                    <span id="address" class="glyphicon glyphicon-remove" aria-hidden="true"></span> address
                                 </button>
-                                <button type="button" class="btn btn-default btn-lg scope">
-                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> phone
+                                <button type="button" class="btn btn-default btn-md scope">
+                                    <span id="phone" class="glyphicon glyphicon-remove" aria-hidden="true"></span> phone
                                 </button>
                             </div>
                         </div>
 
+                        <hr/>
+
                         <div class="form-group">
-                            <label class="col-md-3 control-label" id="flow-type-label" for="code_url">Flow Type: code</label>
-                            <a class="col-md-6 code-url" id="code_url" href="#" target="_blank">#</a>
+                            <label class="col-md-3 control-label" for="flow-type">Flow Type:</label>
+                            <div class="col-md-9" id="flow-type" style="text-align: left">
+                                <div class="col-sm-2 bg-success" style="text-align: center; padding: 6px 12px"><span id="code-type" class="glyphicon glyphicon-ok" aria-hidden="true"></span> code</div>
+                                <div class="col-sm-2 bg-default" style="text-align: center; padding: 6px 12px"><span id="implicit-type" class="glyphicon glyphicon-remove" aria-hidden="true"></span> implicit</div>
+                                <div class="col-sm-2 bg-default" style="text-align: center; padding: 6px 12px"><span id="hybrid-type" class="glyphicon glyphicon-remove" aria-hidden="true"></span> hybrid</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">redirect uri</label>
+                            <label class="col-md-9 control-label" id="redirect_uri" style="text-align: left" th:inline="text"></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="code_url">Link<br/>(click to continue)</label>
+                            <a class="col-md-9 code-url" id="code_url" href="#" target="_blank">#</a>
                         </div>
                     </form>
                 </div>
