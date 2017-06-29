@@ -10,40 +10,95 @@
                         <img width="300px" src="/images/OktaLogo.png"/>
                     </div>
                     <p/>
-                    <form class="form-horizontal" method="POST" action="/code">
+                    <form class="form-horizontal" method="POST" action="/dataAction">
                         <div class="form-group collapse" id="code-section">
-                            <label class="col-md-3 control-label" for="code">Code</label>
-                            <div class="col-md-9">
+                            <label class="col-md-3 control-label" for="code">Authorization Code</label>
+                            <div class="col-md-6">
                                 <input type="text" class="form-control" name="code" id="code" placeholder="code"/>
+                            </div>
+                            <div class="col-md-3 val-token">
+                                <button data-action="exchange-code" class="btn btn-primary code-token-next-step">Exchange Code for Tokens</button>
                             </div>
                         </div>
 
                         <div class="form-group collapse" id="id_token-section">
                             <label class="col-md-3 control-label" for="id_token">ID Token</label>
-                            <div class="col-md-9">
+                            <div class="col-md-6">
                                 <textarea class="form-control" rows="5" name="id_token" id="id_token" placeholder="id_token"/>
+                            </div>
+                            <div class="col-md-3 val-token">
+                                <button class="btn btn-primary validate">Validate ID Token</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group collapse" id="validate-section">
+                            <label class="col-md-3 control-label" for="validate">ID Token Payload</label>
+                            <div class="col-md-6">
+                                <textarea class="form-control" rows="10" name="validate" id="validate" placeholder="validate"/>
+                                <p/>
+                                <div class="alert alert-info" role="alert">
+                                    Validated ID Token using JSON Web Key from JWKS endpoint:<br/>
+                                    <span id="jwks_link"></span><br/>
+                                </div>
                             </div>
                         </div>
 
                         <div class="form-group collapse" id="access_token-section">
                             <label class="col-md-3 control-label" for="access_token">Access Token</label>
-                            <div class="col-md-9">
-                                <textarea class="form-control" rows="5" name="id_token" id="access_token" placeholder="access_token"/>
+                            <div class="col-md-6">
+                                <textarea class="form-control" rows="5" name="access_token" id="access_token" placeholder="access_token"/>
+                            </div>
+                            <div class="col-md-3 val-token">
+                                <button class="btn btn-primary introspect">Validate Access Token</button><p/>
+                                <button class="btn btn-primary userinfo">/userinfo</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group collapse" id="introspect-section">
+                            <label class="col-md-3 control-label" for="introspect">Access Token Payload</label>
+                            <div class="col-md-6">
+                                <textarea class="form-control" rows="10" name="introspect" id="introspect" placeholder="introspect"/>
+                                <p/>
+                                <div class="alert alert-info" role="alert">
+                                    Hit the introspect endpoint:<br/>
+                                    <span id="introspect_link"></span><br/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group collapse" id="userinfo-section">
+                            <label class="col-md-3 control-label" for="userinfo">/userinfo Response</label>
+                            <div class="col-md-6">
+                                <textarea class="form-control" rows="10" name="userinfo" id="userinfo" placeholder="userinfo"/>
+                                <p/>
+                                <div class="alert alert-info" role="alert">
+                                    Hit the userinfo endpoint:<br/>
+                                    <span id="userinfo_link"></span><br/>
+                                    using the access token as a bearer token.
+                                </div>
                             </div>
                         </div>
 
                         <div class="form-group collapse" id="state-section">
                             <label class="col-md-3 control-label" for="state">state</label>
-                            <div class="col-md-9">
+                            <div class="col-md-6">
                                 <input type="text" class="form-control build-code-url" name="state" id="state" placeholder="state"/>
                             </div>
                         </div>
-                        <input type="submit" class="btn btn-primary" value="Verify and Decode Tokens"/>
+
+                        <div class="form-group collapse" id="scope-section">
+                            <label class="col-md-3 control-label" for="state">scope</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control build-code-url" name="scope" id="scope" placeholder="scope"/>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="dataAction" id="dataAction"/>
                     </form>
                 </div>
             </div>
         </div>
         <!--/*/ <th:block th:include="fragments/scripts :: common"/> /*/-->
-        <!--/*/ <th:block th:include="fragments/scripts :: show_code"/> /*/-->
+        <!--/*/ <th:block th:include="fragments/scripts :: flow_results"/> /*/-->
     </body>
 </html>

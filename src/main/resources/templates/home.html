@@ -37,13 +37,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="state">state</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control build-code-url" id="state" placeholder="state" value="state"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="nonce">nonce</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control build-code-url" id="nonce" placeholder="nonce" value="nonce"/>
+                                <input type="text" class="form-control build-code-url" id="state" placeholder="state" th:value="${state}"/>
                             </div>
                         </div>
 
@@ -96,7 +90,12 @@
 
                         <div class="form-group">
                             <label class="col-md-3 control-label">redirect uri</label>
-                            <label class="col-md-9 control-label" id="redirect_uri" style="text-align: left" th:inline="text"></label>
+                            <label class="col-md-9 control-label" id="redirect_uri" style="text-align: left"></label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">nonce</label>
+                            <label class="col-md-9 control-label" id="nonce" style="text-align: left" th:inline="text">[[${nonce}]]</label>
                         </div>
 
                         <div class="form-group">

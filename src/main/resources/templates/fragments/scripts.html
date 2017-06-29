@@ -42,7 +42,7 @@
                 codeUrlParts.push('response_type=' + responseType + '&');
                 codeUrlParts.push('scope=' + scope + '&');
                 codeUrlParts.push('state=' + $('#state').val() + '&');
-                codeUrlParts.push('nonce=' + $('#nonce').val() + '&');
+                codeUrlParts.push('nonce=' + $('#nonce').html() + '&');
                 codeUrlParts.push('redirect_uri=' + encodeURIComponent($('#redirect_uri').html()));
 
                 $('#code_url').attr('href', codeUrlParts.join(''));
@@ -125,7 +125,7 @@
     </script>
 </div>
 
-<div th:fragment="show_code" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="flow_results" xmlns:th="http://www.thymeleaf.org">
     <script>
         /*<![CDATA[*/
         $(document).ready(function () {
@@ -151,6 +151,63 @@
                 $('#state').val(urlParams.get('state'));
                 $('#state-section').show();
             }
+
+            if (urlParams.get('scope')) {
+                $('#scope').val(urlParams.get('scope'));
+                $('#scope-section').show();
+            }
+
+            $('.code-token-next-step').click(function (e) {
+                $('#dataAction').val($(this).attr('data-action'));
+            });
+
+            $('.validate').click(function (e) {
+               e.preventDefault();
+                $.ajax({
+                    url: '/validate',
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ 'id_token': $('#id_token').val() }),
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#validate').val(JSON.stringify(response.validateResponse, null, '\t'));
+                        $('#validate-section').show();
+                        $('#jwks_link').html(response.jwksLink);
+                    }
+                });
+            });
+
+            $('.introspect').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/introspect',
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ 'access_token': $('#access_token').val() }),
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#introspect').val(JSON.stringify(response.introspectResponse, null, '\t'));
+                        $('#introspect-section').show();
+                        $('#introspect_link').html(response.introspectLink);
+                    }
+                });
+            });
+
+            $('.userinfo').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/userinfo',
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ 'access_token': $('#access_token').val() }),
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#userinfo').val(JSON.stringify(response.userinfoResponse, null, '\t'));
+                        $('#userinfo-section').show();
+                        $('#userinfo_link').html(response.userinfoLink);
+                    }
+                });
+            })
         });
         /*]]>*/
     </script>
