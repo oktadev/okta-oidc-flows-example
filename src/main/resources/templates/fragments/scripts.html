@@ -149,9 +149,27 @@
 </div>
 
 <div th:fragment="flow_results" xmlns:th="http://www.thymeleaf.org">
+    <script src="/js/codemirror.js"></script>
     <script>
         /*<![CDATA[*/
         $(document).ready(function () {
+            var prettyTextAreas = {
+                validate: undefined,
+                introspect: undefined,
+                userinfo: undefined
+            };
+            for (var textAreaName in prettyTextAreas) {
+                if (prettyTextAreas.hasOwnProperty(textAreaName)) {
+                    var textArea = document.getElementById(textAreaName);
+                    prettyTextAreas[textAreaName] = CodeMirror.fromTextArea(textArea, {
+                        mode: 'application/json',
+                        lineNumbers: true,
+                        matchBrackets: true,
+                        readOnly: true
+                    });
+                }
+            }
+
             var query = (location.search)?location.search:location.href.substring(location.href.indexOf('#')+1);
             var urlParams = new URLSearchParams(query);
 
@@ -189,8 +207,9 @@
                     data: JSON.stringify({ 'id_token': $('#id_token').val() }),
                     dataType: 'json',
                     success: function (response) {
-                        $('#validate').val(JSON.stringify(response.validateResponse, null, '\t'));
                         $('#validate-section').show();
+                        prettyTextAreas['validate'].setValue(JSON.stringify(response.validateResponse, null, '\t'));
+
                         $('#jwks_link').html(
                             '<a href="' + response.jwksLink + '" target="_blank">' + response.jwksLink + '</a>'
                         );
@@ -207,8 +226,8 @@
                     data: JSON.stringify({ 'access_token': $('#access_token').val() }),
                     dataType: 'json',
                     success: function (response) {
-                        $('#introspect').val(JSON.stringify(response.introspectResponse, null, '\t'));
                         $('#introspect-section').show();
+                        prettyTextAreas['introspect'].setValue(JSON.stringify(response.introspectResponse, null, '\t'));
                         $('#introspect_link').html(response.introspectLink);
                     }
                 });
@@ -223,8 +242,8 @@
                     data: JSON.stringify({ 'access_token': $('#access_token').val() }),
                     dataType: 'json',
                     success: function (response) {
-                        $('#userinfo').val(JSON.stringify(response.userinfoResponse, null, '\t'));
                         $('#userinfo-section').show();
+                        prettyTextAreas['userinfo'].setValue(JSON.stringify(response.userinfoResponse, null, '\t'));
                         $('#userinfo_link').html(response.userinfoLink);
                     }
                 });
