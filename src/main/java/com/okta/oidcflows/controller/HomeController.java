@@ -24,6 +24,7 @@ public class HomeController {
         model.addAttribute("oktaOrg", tenantConfig.getOktaOrg());
         model.addAttribute("nonce", UUID.randomUUID().toString());
         model.addAttribute("state", DashedStringGenerator.generate(4));
+        model.addAttribute("redirectUri", tenantConfig.getRedirectUri(req));
         return "home";
     }
 

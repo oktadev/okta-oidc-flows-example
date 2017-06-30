@@ -23,35 +23,25 @@ public class FlowTypeController {
     @Autowired
     TenantConfig tenantConfig;
 
-    @RequestMapping(value = {"/code", "/implicit", "/hybrid"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/flowResult", method = RequestMethod.GET)
     public String showCode(HttpServletRequest req) {
         return "flow_results";
     }
 
-
-    @RequestMapping(value = "/dataAction", method = RequestMethod.POST)
-    public String dataAction(@RequestParam Map<String, String> requestParams) throws IOException, AuthenticationException {
-
-        String dataAction = requestParams.get("dataAction");
-        if ("exchange-code".equals(dataAction)) {
-            return exchangeCode(requestParams);
-        }
-        return null;
-    }
-
-    private String exchangeCode(Map<String, String> requestParams)  throws IOException, AuthenticationException {
+    @RequestMapping(value = "/exchangeCode", method = RequestMethod.POST)
+    public String exchangeCode(HttpServletRequest req, @RequestParam Map<String, String> requestParams)  throws IOException, AuthenticationException {
         String code = requestParams.get("code");
         String state =  requestParams.get("state");
-        Map<String, Object> codeResult = oidcService.exchangeCode(code);
+        Map<String, Object> codeResult = oidcService.exchangeCode(req, code);
 
         String results = "state=" + state;
         results += codeResult
-                .entrySet()
-                .stream()
-                .map(entry -> "&" + entry.getKey() + "=" + entry.getValue())
-                .collect(Collectors.joining());
+            .entrySet()
+            .stream()
+            .map(entry -> "&" + entry.getKey() + "=" + entry.getValue())
+            .collect(Collectors.joining());
 
-        return "redirect:/code?" + results;
+        return "redirect:/flowResult?" + results;
     }
 
 }

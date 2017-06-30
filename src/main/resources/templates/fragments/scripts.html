@@ -105,9 +105,6 @@
                         $('#' + flowType + '-type').parent().addClass('bg-success');
                         $('#' + flowType + '-type').addClass('glyphicon-ok');
                         $('#' + flowType + '-type').removeClass('glyphicon-remove');
-                        $('#redirect_uri').html([location.protocol, '//', location.host, location.pathname].join('') +  flowType);
-                    } else {
-                        $('#redirect_uri').html([location.protocol, '//', location.host, location.pathname].join(''));
                     }
 
                     codeUrlBuilder();
@@ -156,10 +153,6 @@
                 $('#scope').val(urlParams.get('scope'));
                 $('#scope-section').show();
             }
-
-            $('.code-token-next-step').click(function (e) {
-                $('#dataAction').val($(this).attr('data-action'));
-            });
 
             $('.validate').click(function (e) {
                e.preventDefault();

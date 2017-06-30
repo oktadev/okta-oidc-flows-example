@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,7 +44,38 @@ public class TenantConfig {
         envMap.put("okta.oidc.client.id", oidcClientId);
         envMap.put("okta.authorizationServer.id", authorizationServerId);
         envMap.put("okta.org", oktaOrg);
-        envMap.put("redirect.uri", redirectUri);
+    }
+
+    // not updateable after startup
+    public String getOidcClientSecret() {
+        return oidcClientSecret;
+    }
+
+    // not updateable after startup
+    public String getRedirectUri(HttpServletRequest req) {
+        String proto = req.getHeader("x-forwarded-proto");
+        String requestUrl = req.getRequestURL().toString();
+
+        int finalSlashIdx = requestUrl.lastIndexOf("/");
+        requestUrl = requestUrl.substring(0, finalSlashIdx);
+
+        requestUrl = (proto != null) ?
+            proto + "://" + requestUrl.substring(req.getRequestURL().indexOf("//")+2) :
+            requestUrl;
+
+        return requestUrl + redirectUri;
+    }
+
+    public String getOidcClientId() {
+        return getEnv("okta.oidc.client.id");
+    }
+
+    public String getAuthorizationServerId() {
+        return getEnv("okta.authorizationServer.id");
+    }
+
+    public String getOktaOrg() {
+        return getEnv("okta.org");
     }
 
     public boolean isChanged(String envVar) {
@@ -65,26 +97,5 @@ public class TenantConfig {
 
     public String getEnv(String key) {
         return envMap.get(key);
-    }
-
-    // not updateable after startup
-    public String getOidcClientSecret() {
-        return oidcClientSecret;
-    }
-
-    public String getOidcClientId() {
-        return getEnv("okta.oidc.client.id");
-    }
-
-    public String getAuthorizationServerId() {
-        return getEnv("okta.authorizationServer.id");
-    }
-
-    public String getOktaOrg() {
-        return getEnv("okta.org");
-    }
-
-    public String getRedirectUri() {
-        return getEnv("redirect.uri");
     }
 }
