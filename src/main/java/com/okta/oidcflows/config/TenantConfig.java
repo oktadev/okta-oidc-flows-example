@@ -7,19 +7,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 public class TenantConfig {
 
+    public static final String REDIRECT_URI = "/flow_result";
+
     // not updateable after startup
     @Value("#{ @environment['okta.oidc.client.secret'] }")
     protected String oidcClientSecret;
-
 
     @Value("#{ @environment['okta.oidc.client.id'] }")
     protected String oidcClientId;
@@ -29,9 +28,6 @@ public class TenantConfig {
 
     @Value("#{ @environment['okta.org'] }")
     protected String oktaOrg;
-
-    @Value("#{ @environment['redirect.uri'] }")
-    protected String redirectUri;
 
     @Autowired
     Environment env;
@@ -63,7 +59,7 @@ public class TenantConfig {
             proto + "://" + requestUrl.substring(req.getRequestURL().indexOf("//")+2) :
             requestUrl;
 
-        return requestUrl + redirectUri;
+        return requestUrl + REDIRECT_URI;
     }
 
     public String getOidcClientId() {
@@ -82,6 +78,15 @@ public class TenantConfig {
         String envToCompare = envMap.get(envVar);
         if (envToCompare != null) {
             return !envToCompare.equals(env.getProperty(envVar));
+        }
+        return false;
+    }
+
+    public boolean anyChanged() {
+        for (String key : envMap.keySet()) {
+            if (isChanged(key)) {
+                return true;
+            }
         }
         return false;
     }

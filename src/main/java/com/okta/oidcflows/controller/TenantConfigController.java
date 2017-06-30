@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -27,4 +28,11 @@ public class TenantConfigController {
         return tenantConfig.getEnv();
     }
 
+    @RequestMapping(value = "/is_changed", method = RequestMethod.GET)
+    public @ResponseBody Map<String, Object> isChanged() {
+        Map<String, Object> ret = new HashMap<>();
+        ret.put("isChanged", tenantConfig.anyChanged());
+
+        return ret;
+    }
 }

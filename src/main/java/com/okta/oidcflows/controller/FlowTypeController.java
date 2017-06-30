@@ -23,12 +23,12 @@ public class FlowTypeController {
     @Autowired
     TenantConfig tenantConfig;
 
-    @RequestMapping(value = "/flowResult", method = RequestMethod.GET)
+    @RequestMapping(value = TenantConfig.REDIRECT_URI, method = RequestMethod.GET)
     public String showCode(HttpServletRequest req) {
         return "flow_results";
     }
 
-    @RequestMapping(value = "/exchangeCode", method = RequestMethod.POST)
+    @RequestMapping(value = "/exchange_code", method = RequestMethod.POST)
     public String exchangeCode(HttpServletRequest req, @RequestParam Map<String, String> requestParams)  throws IOException, AuthenticationException {
         String code = requestParams.get("code");
         String state =  requestParams.get("state");
@@ -41,7 +41,7 @@ public class FlowTypeController {
             .map(entry -> "&" + entry.getKey() + "=" + entry.getValue())
             .collect(Collectors.joining());
 
-        return "redirect:/flowResult?" + results;
+        return "redirect:" + TenantConfig.REDIRECT_URI + "?" + results;
     }
 
 }
