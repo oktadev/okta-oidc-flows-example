@@ -2,6 +2,12 @@
     <script>
     /*<![CDATA[*/
         $(document).ready(function () {
+
+            $('#allthethings').popup({
+                opacity: 0,
+                transition: 'all 0.5s'
+            });
+
             getFlowType = function () {
                 var isCode = $('#code').hasClass('glyphicon-ok');
                 var isIdToken = $('#id_token').hasClass('glyphicon-ok');
@@ -21,19 +27,32 @@
             };
 
             codeUrlBuilder = function () {
+                var isCode = $('#code').hasClass('glyphicon-ok');
+                var isIdToken = $('#id_token').hasClass('glyphicon-ok');
+                var isToken = $('#token').hasClass('glyphicon-ok')
+
                 var responseType =
-                    ($('#code').hasClass('glyphicon-ok')?'code+':'') +
-                    ($('#id_token').hasClass('glyphicon-ok')?'id_token+':'') +
-                    ($('#token').hasClass('glyphicon-ok')?'token+':'');
+                    (isCode ? 'code+' : '') +
+                    (isIdToken ? 'id_token+' : '') +
+                    (isToken ? 'token+' : '');
                 if (responseType.endsWith('+')) {
                     responseType = responseType.substring(0, responseType.length - 1);
                 }
 
+                var isProfile = $('#profile').hasClass('glyphicon-ok');
+                var isEmail = $('#email').hasClass('glyphicon-ok');
+                var isAddress = $('#address').hasClass('glyphicon-ok');
+                var isPhone = $('#phone').hasClass('glyphicon-ok');
+
                 var scope = 'openid' +
-                    ($('#profile').hasClass('glyphicon-ok')?'+profile':'') +
-                    ($('#email').hasClass('glyphicon-ok')?'+email':'') +
-                    ($('#address').hasClass('glyphicon-ok')?'+address':'') +
-                    ($('#phone').hasClass('glyphicon-ok')?'+phone':'');
+                    (isProfile ? '+profile' : '') +
+                    (isEmail ? '+email' : '') +
+                    (isAddress ? '+address' : '') +
+                    (isPhone ? '+phone' : '');
+
+                if (isCode && isIdToken && isToken && isProfile && isEmail && isAddress && isPhone) {
+                    allTheThings();
+                }
 
                 var codeUrlParts = [];
                 codeUrlParts.push('https://' + $('#okta_org').val() + '/oauth2/');
@@ -63,6 +82,13 @@
                     }),
                     dataType: 'json'
                 });
+            };
+
+            allTheThings = function() {
+                $('#allthethings').popup('show');
+                setTimeout(function () {
+                    $('#allthethings').popup('hide');
+                }, 1000)
             };
 
             buttonToggle = function (e) {
@@ -165,7 +191,9 @@
                     success: function (response) {
                         $('#validate').val(JSON.stringify(response.validateResponse, null, '\t'));
                         $('#validate-section').show();
-                        $('#jwks_link').html(response.jwksLink);
+                        $('#jwks_link').html(
+                            '<a href="' + response.jwksLink + '" target="_blank">' + response.jwksLink + '</a>'
+                        );
                     }
                 });
             });
