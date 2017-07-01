@@ -35,4 +35,9 @@ public class TenantConfigController {
 
         return ret;
     }
+
+    @RequestMapping(value = "/reset_config", method = RequestMethod.POST)
+    public @ResponseBody Map<String, String> resetConfig() {
+        return tenantConfig.resetEnv();
+    }
 }

@@ -8,17 +8,30 @@
                 transition: 'all 0.5s'
             });
 
-            getFlowType = function () {
+            getButtonStates = function () {
                 var isCode = $('#code').hasClass('glyphicon-ok');
                 var isIdToken = $('#id_token').hasClass('glyphicon-ok');
                 var isToken = $('#token').hasClass('glyphicon-ok');
+                var isProfile = $('#profile').hasClass('glyphicon-ok');
+                var isEmail = $('#email').hasClass('glyphicon-ok');
+                var isAddress = $('#address').hasClass('glyphicon-ok');
+                var isPhone = $('#phone').hasClass('glyphicon-ok');
+
+                return {
+                    isCode: isCode, isIdToken: isIdToken, isToken: isToken, isProfile: isProfile,
+                    isEmail: isEmail, isAddress: isAddress, isPhone: isPhone
+                };
+            };
+
+            getFlowType = function () {
+                var buttonStates = getButtonStates();
 
                 var flowType = '';
-                if (isCode && (isIdToken || isToken)) {
+                if (buttonStates.isCode && (buttonStates.isIdToken || buttonStates.isToken)) {
                     flowType = 'hybrid';
-                } else if (isCode) {
+                } else if (buttonStates.isCode) {
                     flowType = 'code';
-                } else if (isIdToken || isToken) {
+                } else if (buttonStates.isIdToken || buttonStates.isToken) {
                     flowType = 'implicit';
                 } else {
                     flowType = 'none_selected';
@@ -27,32 +40,21 @@
             };
 
             codeUrlBuilder = function () {
-                var isCode = $('#code').hasClass('glyphicon-ok');
-                var isIdToken = $('#id_token').hasClass('glyphicon-ok');
-                var isToken = $('#token').hasClass('glyphicon-ok')
+                var buttonStates = getButtonStates();
 
                 var responseType =
-                    (isCode ? 'code+' : '') +
-                    (isIdToken ? 'id_token+' : '') +
-                    (isToken ? 'token+' : '');
+                    (buttonStates.isCode ? 'code+' : '') +
+                    (buttonStates.isIdToken ? 'id_token+' : '') +
+                    (buttonStates.isToken ? 'token+' : '');
                 if (responseType.endsWith('+')) {
                     responseType = responseType.substring(0, responseType.length - 1);
                 }
 
-                var isProfile = $('#profile').hasClass('glyphicon-ok');
-                var isEmail = $('#email').hasClass('glyphicon-ok');
-                var isAddress = $('#address').hasClass('glyphicon-ok');
-                var isPhone = $('#phone').hasClass('glyphicon-ok');
-
                 var scope = 'openid' +
-                    (isProfile ? '+profile' : '') +
-                    (isEmail ? '+email' : '') +
-                    (isAddress ? '+address' : '') +
-                    (isPhone ? '+phone' : '');
-
-                if (isCode && isIdToken && isToken && isProfile && isEmail && isAddress && isPhone) {
-                    allTheThings();
-                }
+                    (buttonStates.isProfile ? '+profile' : '') +
+                    (buttonStates.isEmail ? '+email' : '') +
+                    (buttonStates.isAddress ? '+address' : '') +
+                    (buttonStates.isPhone ? '+phone' : '');
 
                 var codeUrlParts = [];
                 codeUrlParts.push('https://' + $('#okta_org').val() + '/oauth2/');
@@ -60,7 +62,7 @@
                 codeUrlParts.push('client_id=' + $('#oidc_client_id').val() + '&');
                 codeUrlParts.push('response_type=' + responseType + '&');
                 codeUrlParts.push('scope=' + scope + '&');
-                codeUrlParts.push('state=' + $('#state').val() + '&');
+                codeUrlParts.push('state=' + $('#state').html() + '&');
                 codeUrlParts.push('nonce=' + $('#nonce').html() + '&');
                 codeUrlParts.push('redirect_uri=' + encodeURIComponent($('#redirect_uri').html()));
 
@@ -68,20 +70,6 @@
                 $('#code_url').html(codeUrlParts.join('<br/>'));
 
                 var flowType = getFlowType();
-
-                // update on server
-                $.ajax({
-                    url: '/update_config',
-                    type: 'PUT',
-                    contentType: "application/json; charset=utf-8",
-                    data: JSON.stringify({
-                        'okta.oidc.client.id': $('#oidc_client_id').val(),
-                        'okta.authorizationServer.id': $('#auth_server_id').val(),
-                        'okta.org': $('#okta_org').val(),
-                        'redirect.uri': $('#redirect_uri').html()
-                    }),
-                    dataType: 'json'
-                });
             };
 
             allTheThings = function() {
@@ -103,6 +91,16 @@
                     $(child).addClass('glyphicon-ok');
                     $(target).addClass('btn-primary');
                 }
+
+                var buttonStates = getButtonStates();
+
+                if (
+                    buttonStates.isCode && buttonStates.isIdToken && buttonStates.isToken &&
+                    buttonStates.isProfile && buttonStates.isEmail && buttonStates.isAddress &&
+                    buttonStates.isPhone
+                ) {
+                    allTheThings();
+                }
             };
         });
     /*]]>*/
@@ -113,8 +111,6 @@
     <script>
         /*<![CDATA[*/
             $(document).ready(function () {
-                $('.build-code-url').keyup(codeUrlBuilder);
-
                 var flowTypeHandler = function (e) {
                     buttonToggle(e);
 
@@ -132,10 +128,58 @@
                         $('#' + flowType + '-type').addClass('glyphicon-ok');
                         $('#' + flowType + '-type').removeClass('glyphicon-remove');
                     }
-
-                    codeUrlBuilder();
                 };
-                $('.response-type').click(flowTypeHandler);
+
+                // check to see if the config has changed. If so, we need to disable the validate access token button
+                $.ajax({
+                    url: '/is_changed',
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.isChanged) {
+                            $('#config-change-notice').show();
+                        }
+                    }
+                });
+
+                $('#revert-config').click(function () {
+                    $('#config-change-notice').hide();
+
+                    $.ajax({
+                        url: '/reset_config',
+                        type: 'POST',
+                        contentType: "application/json; charset=utf-8",
+                        dataType: 'json',
+                        success: function (response) {
+                            $('#oidc_client_id').val(response['okta.oidc.client.id']);
+                            $('#auth_server_id').val(response['okta.authorizationServer.id']);
+                            $('#okta_org').val(response['okta.org']);
+                            codeUrlBuilder();
+                        }
+                    });
+                });
+
+                $('.update-config').keyup(function () {
+                    $('#config-change-notice').show();
+
+                    // update on server
+                    $.ajax({
+                        url: '/update_config',
+                        type: 'PUT',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
+                            'okta.oidc.client.id': $('#oidc_client_id').val(),
+                            'okta.authorizationServer.id': $('#auth_server_id').val(),
+                            'okta.org': $('#okta_org').val()
+                        }),
+                        dataType: 'json'
+                    });
+                });
+
+                $('.build-url').keyup(codeUrlBuilder);
+                $('.response-type').click(function (e) {
+                    flowTypeHandler(e);
+                    codeUrlBuilder();
+                });
                 $('.scope').click(function (e) {
                     buttonToggle(e);
                     codeUrlBuilder();
@@ -173,19 +217,34 @@
             var query = (location.search)?location.search:location.href.substring(location.href.indexOf('#')+1);
             var urlParams = new URLSearchParams(query);
 
-            if (urlParams.get('code')) {
-                $('#code').val(urlParams.get('code'));
-                $('#code-section').show();
-            }
+            // check to see if the config has changed. If so, we need to disable the validate access token button
+            $.ajax({
+                url: '/is_changed',
+                type: 'GET',
+                success: function (response) {
+                    var isConfigChanged = response.isChanged;
+
+                    if (urlParams.get('code')) {
+                        $('#code').val(urlParams.get('code'));
+                        if (isConfigChanged) {
+                            $('.exchange-code').prop("disabled",true);
+                        }
+                        $('#code-section').show();
+                    }
+
+                    if (urlParams.get('access_token')) {
+                        $('#access_token').val(urlParams.get('access_token'));
+                        if (isConfigChanged) {
+                            $('.introspect').prop("disabled",true);
+                        }
+                        $('#access_token-section').show();
+                    }
+                }
+            });
 
             if (urlParams.get('id_token')) {
                 $('#id_token').val(urlParams.get('id_token'));
                 $('#id_token-section').show();
-            }
-
-            if (urlParams.get('access_token')) {
-                $('#access_token').val(urlParams.get('access_token'));
-                $('#access_token-section').show();
             }
 
             if (urlParams.get('state')) {

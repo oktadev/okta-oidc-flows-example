@@ -103,4 +103,9 @@ public class TenantConfig {
     public String getEnv(String key) {
         return envMap.get(key);
     }
+
+    public Map<String, String> resetEnv() {
+        envMap.keySet().forEach(k -> envMap.put(k, env.getProperty(k)));
+        return envMap;
+    }
 }

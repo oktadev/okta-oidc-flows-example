@@ -13,34 +13,29 @@
                         <img width="300px" src="/images/OktaLogo.png"/>
                     </div>
                     <p/>
-                    <!--<div class="alert alert-info" role="alert">-->
-                        <!--NOTE: If you want to use this site with your own settings, simply use the Deploy on Heroku button below.-->
-                        <!--<br/>-->
-                        <!--(You'll need to supply your own config values)-->
-                    <!--</div>-->
+                    <div id="config-change-notice" class="alert alert-info collapse" role="alert">
+                        NOTE: The original settings have changed. You can do everything *except* verify an access token
+                        as a Client Secret for the Okta application is required.
+                        <p/><br/>
+                        <button class="btn btn-success" id="revert-config">Revert to Original Config</button>
+                    </div>
                     <form class="form-horizontal">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="okta_org">Okta Org</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control build-code-url" id="okta_org" placeholder="Okta Org" th:value="${oktaOrg}"/>
+                                <input type="text" class="form-control build-url update-config" id="okta_org" placeholder="Okta Org" th:value="${oktaOrg}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="auth_server_id">Authorization Server ID</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control build-code-url" id="auth_server_id" placeholder="Authorization Server ID" th:value="${authorizationServerId}"/>
+                                <input type="text" class="form-control build-url update-config" id="auth_server_id" placeholder="Authorization Server ID" th:value="${authorizationServerId}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="oidc_client_id">OIDC Client ID</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control build-code-url" id="oidc_client_id" placeholder="OIDC Client ID" th:value="${oidcClientId}"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="state">state</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control build-code-url" id="state" placeholder="state" th:value="${state}"/>
+                                <input type="text" class="form-control build-url update-config" id="oidc_client_id" placeholder="OIDC Client ID" th:value="${oidcClientId}"/>
                             </div>
                         </div>
 
@@ -100,6 +95,12 @@
                             <label class="col-md-3 control-label">nonce</label>
                             <label class="col-md-9 control-label" id="nonce" style="text-align: left" th:inline="text">[[${nonce}]]</label>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="state">state</label>
+                            <label class="col-md-9 control-label" id="state" style="text-align: left" th:inline="text">[[${state}]]</label>
+                        </div>
+
 
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="code_url">Link<br/>(click to continue)</label>
