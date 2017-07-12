@@ -1,6 +1,5 @@
 package com.okta.oidcflows.config;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +13,19 @@ import java.util.Map;
 @Configuration
 public class TenantConfig {
 
-    public static final String REDIRECT_URI = "/flow_result";
+    public static final String FLOW_REDIRECT_URI = "/flow_result";
+    public static final String SESSION_REDIRECT_URI = "/continue";
 
-    // not updateable after startup
+    // BEGIN not updateable after startup
     @Value("#{ @environment['okta.oidc.client.secret'] }")
     protected String oidcClientSecret;
+
+    @Value("#{ @environment['okta.session.username'] }")
+    protected String sessionUsername;
+
+    @Value("#{ @environment['okta.session.password'] }")
+    protected String sessionPassword;
+    // END not updateable after startup
 
     @Value("#{ @environment['okta.oidc.client.id'] }")
     protected String oidcClientId;
@@ -42,13 +49,20 @@ public class TenantConfig {
         envMap.put("okta.org", oktaOrg);
     }
 
-    // not updateable after startup
+    // BEGIN not updateable after startup
     public String getOidcClientSecret() {
         return oidcClientSecret;
     }
 
-    // not updateable after startup
-    public String getRedirectUri(HttpServletRequest req) {
+    public String getSessionUsername() {
+        return sessionUsername;
+    }
+
+    public String getSessionPassword() {
+        return sessionPassword;
+    }
+
+    public String getRedirectUrl(HttpServletRequest req, String redirectUri) {
         String proto = req.getHeader("x-forwarded-proto");
         String requestUrl = req.getRequestURL().toString();
 
@@ -59,8 +73,9 @@ public class TenantConfig {
             proto + "://" + requestUrl.substring(req.getRequestURL().indexOf("//")+2) :
             requestUrl;
 
-        return requestUrl + REDIRECT_URI;
+        return requestUrl + redirectUri;
     }
+    // END not updateable after startup
 
     public String getOidcClientId() {
         return getEnv("okta.oidc.client.id");

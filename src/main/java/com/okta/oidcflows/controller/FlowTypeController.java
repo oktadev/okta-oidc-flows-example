@@ -23,7 +23,7 @@ public class FlowTypeController {
     @Autowired
     TenantConfig tenantConfig;
 
-    @RequestMapping(value = TenantConfig.REDIRECT_URI, method = RequestMethod.GET)
+    @RequestMapping(value = TenantConfig.FLOW_REDIRECT_URI, method = RequestMethod.GET)
     public String showCode(HttpServletRequest req) {
         return "flow_results";
     }
@@ -41,7 +41,7 @@ public class FlowTypeController {
             .map(entry -> "&" + entry.getKey() + "=" + entry.getValue())
             .collect(Collectors.joining());
 
-        return "redirect:" + TenantConfig.REDIRECT_URI + "?" + results;
+        return "redirect:" + TenantConfig.FLOW_REDIRECT_URI + "?" + results;
     }
 
 }

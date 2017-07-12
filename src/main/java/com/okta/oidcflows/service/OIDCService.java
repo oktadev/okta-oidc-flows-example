@@ -9,6 +9,7 @@ import java.util.Map;
 
 public interface OIDCService {
 
+    String getSessionRedirectUrl(HttpServletRequest req) throws IOException;
     Map<String, Object> exchangeCode(HttpServletRequest req, String code) throws IOException, AuthenticationException;
     boolean validateIdToken(String idToken);
     Map<String, Object> userInfo(String accessToken) throws IOException;

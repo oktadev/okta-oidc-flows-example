@@ -3,6 +3,7 @@ package com.okta.oidcflows.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.okta.oidcflows.config.TenantConfig;
+import com.okta.oidcflows.util.DashedStringGenerator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwsHeader;
@@ -14,20 +15,19 @@ import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.fluent.Request;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -39,6 +39,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class OIDCServiceImpl implements OIDCService {
@@ -52,6 +53,34 @@ public class OIDCServiceImpl implements OIDCService {
     private TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
 
     @Override
+    public String getSessionRedirectUrl(HttpServletRequest req) throws IOException {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("username", tenantConfig.getSessionUsername());
+        map.put("password", tenantConfig.getSessionPassword());
+
+        HttpResponse response = Request.Post("https://" + tenantConfig.getOktaOrg() + "/api/v1/authn")
+            .addHeader("Content-type", "application/json")
+            .body(new StringEntity(mapper.writeValueAsString(map)))
+            .execute()
+            .returnResponse();
+
+        map = mapper.readValue(response.getEntity().getContent(), typeRef);
+        String sessionToken = map.get("sessionToken");
+
+        String sessionLink = "https://" + tenantConfig.getOktaOrg() +
+            "/oauth2/" + tenantConfig.getAuthorizationServerId() + "/v1/authorize?" +
+            "client_id=" + tenantConfig.getOidcClientId() + "&" +
+            "response_type=code&scope=openid&" +
+            "state=" + DashedStringGenerator.generate(4) + "&" +
+            "nonce=" + UUID.randomUUID().toString() + "&" +
+            "redirect_uri=" + tenantConfig.getRedirectUrl(req, TenantConfig.SESSION_REDIRECT_URI) + "&" +
+            "sessionToken=" + sessionToken;
+
+        return sessionLink;
+    }
+
+    @Override
     public Map<String, Object> exchangeCode(HttpServletRequest req, String code) throws IOException, AuthenticationException {
         HttpPost httpPost = new HttpPost(
             "https://" + tenantConfig.getOktaOrg() + "/oauth2/" +
@@ -59,7 +88,7 @@ public class OIDCServiceImpl implements OIDCService {
         );
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("grant_type", "authorization_code"));
-        nvps.add(new BasicNameValuePair("redirect_uri", tenantConfig.getRedirectUri(req)));
+        nvps.add(new BasicNameValuePair("redirect_uri", tenantConfig.getRedirectUrl(req, TenantConfig.FLOW_REDIRECT_URI)));
         nvps.add(new BasicNameValuePair("code", code));
         httpPost.setEntity(new UrlEncodedFormEntity(nvps));
 

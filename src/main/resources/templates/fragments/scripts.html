@@ -130,17 +130,6 @@
                     }
                 };
 
-                // check to see if the config has changed. If so, we need to disable the validate access token button
-                $.ajax({
-                    url: '/is_changed',
-                    type: 'GET',
-                    success: function (response) {
-                        if (response.isChanged) {
-                            $('#config-change-notice').show();
-                        }
-                    }
-                });
-
                 $('#revert-config').click(function () {
                     $('#config-change-notice').hide();
 
@@ -165,7 +154,7 @@
                     $.ajax({
                         url: '/update_config',
                         type: 'PUT',
-                        contentType: "application/json; charset=utf-8",
+                        contentType: 'application/json; charset=utf-8',
                         data: JSON.stringify({
                             'okta.oidc.client.id': $('#oidc_client_id').val(),
                             'okta.authorizationServer.id': $('#auth_server_id').val(),
@@ -173,6 +162,17 @@
                         }),
                         dataType: 'json'
                     });
+                });
+
+                // check to see if the config has changed. If so, we need to disable the validate access token button
+                $.ajax({
+                    url: '/is_changed',
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.isChanged) {
+                            $('#config-change-notice').show();
+                        }
+                    }
                 });
 
                 $('.build-url').keyup(codeUrlBuilder);
