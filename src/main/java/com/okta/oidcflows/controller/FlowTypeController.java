@@ -18,10 +18,10 @@ import java.util.stream.Collectors;
 public class FlowTypeController {
 
     @Autowired
-    OIDCService oidcService;
+    TenantConfig tenantConfig;
 
     @Autowired
-    TenantConfig tenantConfig;
+    OIDCService oidcService;
 
     @RequestMapping(value = TenantConfig.FLOW_REDIRECT_URI, method = RequestMethod.GET)
     public String showCode(HttpServletRequest req) {

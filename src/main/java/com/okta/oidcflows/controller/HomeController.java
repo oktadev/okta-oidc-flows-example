@@ -37,9 +37,4 @@ public class HomeController {
 
         return "home";
     }
-
-    @RequestMapping("/chart")
-    public String chart() {
-        return "chart";
-    }
 }
