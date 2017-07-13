@@ -4,7 +4,7 @@ This is a Spring Boot project that demonstrates various OIDC flows using
 configurable response types and scopes.
 
 Go to the live example at 
-<a href="https://okta-oidc-fun.herokuapp.com" target="_blank">https://okta-oidc-fun.herokuapp.com</a>.
+[https://okta-oidc-fun.herokuapp.com](https://okta-oidc-fun.herokuapp.com).
 
 You can exchange an authorizaton code for tokens.
 
@@ -31,4 +31,4 @@ on the backend so that the user does not have to login to exercise the OIDC app.
 These environment variables are stored on the heroku instance and are *not* available to the end user.
 
 Go to the live example at 
-<a href="https://okta-oidc-fun.herokuapp.com" target="_blank">https://okta-oidc-fun.herokuapp.com</a>.
+[https://okta-oidc-fun.herokuapp.com](https://okta-oidc-fun.herokuapp.com).
