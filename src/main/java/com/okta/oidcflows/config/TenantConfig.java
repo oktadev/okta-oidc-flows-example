@@ -30,7 +30,7 @@ public class TenantConfig {
     @Value("#{ @environment['okta.oidc.client.id'] }")
     protected String oidcClientId;
 
-    @Value("#{ @environment['okta.authorizationServer.id'] }")
+    @Value("#{ @environment['okta.authorization.server.id'] }")
     protected String authorizationServerId;
 
     @Value("#{ @environment['okta.org'] }")

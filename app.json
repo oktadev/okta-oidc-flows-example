@@ -1,0 +1,33 @@
+{
+  "name": "Fun with OIDC",
+  "description": "This app demonstrates various OpenID Connect flows, scopes and tokens",
+  "repository": "https://github.com/dogeared/okta-oidc-flows/tree/master",
+  "keywords": ["oidc", "identity", "security", "authentication"],
+  "success_url": "/",
+  "env": {
+    "OKTA_ORG": {
+      "description": "The okta organization. ex: micah.okta.com",
+      "value": "changeme"
+    },
+    "OKTA_AUTHORIZATION_SERVER_ID": {
+      "description": "The Okta authorization server id",
+      "value": "changeme"
+    },
+    "OKTA_OIDC_CLIENT_ID": {
+      "description": "The Okta OIDC application client id",
+      "value": "changeme"
+    },
+    "OKTA_OIDC_CLIENT_SECRET": {
+      "description": "The Okta OIDC application client secret",
+      "value": "changeme"
+    },
+    "OKTA_SESSION_USERNAME": {
+      "description": "The email address of the user that the app will establish a session as",
+      "value": "changeme"
+    },
+    "OKTA_SESSION_PASSWORD": {
+      "description": "The password of the user that the app will establish a session as",
+      "value": "changeme"
+    }
+  }
+}
