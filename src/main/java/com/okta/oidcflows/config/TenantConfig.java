@@ -45,7 +45,7 @@ public class TenantConfig {
     private void setup() {
         envMap = new HashMap<>();
         envMap.put("okta.oidc.client.id", oidcClientId);
-        envMap.put("okta.authorizationServer.id", authorizationServerId);
+        envMap.put("okta.authorization.server.id", authorizationServerId);
         envMap.put("okta.org", oktaOrg);
     }
 
@@ -82,7 +82,7 @@ public class TenantConfig {
     }
 
     public String getAuthorizationServerId() {
-        return getEnv("okta.authorizationServer.id");
+        return getEnv("okta.authorization.server.id");
     }
 
     public String getOktaOrg() {
