@@ -14,10 +14,16 @@
                     </div>
                     <p/>
                     <div id="config-change-notice" class="alert alert-info collapse" role="alert">
-                        NOTE: The original settings have changed. You can do everything *except* verify an access token
+                        NOTE: The original settings have changed.<br/>
+                        You won't be able to exchange a code for tokens or validate an access token
                         as a Client Secret for the Okta application is required.
                         <p/><br/>
                         <button class="btn btn-success" id="revert-config">Revert to Original Config</button>
+                    </div>
+                    <div class="alert alert-info" role="alert" th:inline="text">
+                        NOTE: A default session has been established using: <b>[[${sessionUsername}]]</b><p/>
+
+                        If you change the org settings below, you will need to log in when you click the link.
                     </div>
                     <form class="form-horizontal">
                         <div class="form-group">
