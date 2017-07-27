@@ -152,14 +152,14 @@
                         dataType: 'json',
                         success: function (response) {
                             $('#oidc_client_id').val(response['okta.oidc.client.id']);
-                            $('#auth_server_id').val(response['okta.authorizationServer.id']);
+                            $('#auth_server_id').val(response['okta.authorization.server.id']);
                             $('#okta_org').val(response['okta.org']);
                             codeUrlBuilder();
                         }
                     });
                 });
 
-                $('.update-config').keyup(function () {
+                $('.update-config').bind('keyup blur', function () {
                     $('#config-change-notice').show();
 
                     // update on server
@@ -169,7 +169,7 @@
                         contentType: 'application/json; charset=utf-8',
                         data: JSON.stringify({
                             'okta.oidc.client.id': $('#oidc_client_id').val(),
-                            'okta.authorizationServer.id': $('#auth_server_id').val(),
+                            'okta.authorization.server.id': $('#auth_server_id').val(),
                             'okta.org': $('#okta_org').val()
                         }),
                         dataType: 'json'
@@ -179,7 +179,7 @@
                 // check to see if the config has changed. If so, we need to disable the validate access token button
                 ShowNoticeIfConfigChanged();
 
-                $('.build-url').keyup(codeUrlBuilder);
+                $('.build-url').bind('keyup blur', codeUrlBuilder);
                 $('.response-type').click(function (e) {
                     flowTypeHandler(e);
                     codeUrlBuilder();
