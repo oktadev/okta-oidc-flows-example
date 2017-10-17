@@ -198,6 +198,7 @@
 
 <div th:fragment="flow_results" xmlns:th="http://www.thymeleaf.org">
     <script src="/js/codemirror.js"></script>
+    <script src="/js/mode/javascript.js"></script>
     <script>
         /*<![CDATA[*/
         $(document).ready(function () {
@@ -210,7 +211,7 @@
                 if (prettyTextAreas.hasOwnProperty(textAreaName)) {
                     var textArea = document.getElementById(textAreaName);
                     prettyTextAreas[textAreaName] = CodeMirror.fromTextArea(textArea, {
-                        mode: 'application/json',
+                        mode: 'javascript',
                         lineNumbers: true,
                         matchBrackets: true,
                         readOnly: true
@@ -218,7 +219,7 @@
                 }
             }
 
-            var query = (location.search)?location.search:location.href.substring(location.href.indexOf('#')+1);
+            var query = (location.search) ? location.search : location.href.substring(location.href.indexOf('#')+1);
             var urlParams = new URLSearchParams(query);
 
             // check to see if the config has changed. If so, we need to disable the validate access token button
@@ -238,6 +239,7 @@
 
                     if (urlParams.get('access_token')) {
                         $('#access_token').val(urlParams.get('access_token'));
+                        $('.zork').attr("href", "/zork#access_token=" + urlParams.get('access_token'));
                         if (isConfigChanged) {
                             $('.introspect').prop("disabled",true);
                         }
@@ -319,28 +321,107 @@
     </script>
 </div>
 
-
-
-<div th:fragment="chart" xmlns:th="http://www.thymeleaf.org">
-    <script>
+<div th:fragment="zork" xmlns:th="http://www.thymeleaf.org">
+    <script src="/js/codemirror.js"></script>
+    <script src="/js/mode/javascript.js"></script>
+    <script src="/js/mode/shell.js"></script>
+    <script th:inline="text">
         /*<![CDATA[*/
         $(document).ready(function () {
-            var flowTypeHandler = function (e) {
-                buttonToggle(e);
+            var oktaZorkUrl = '[[${oktaZorkUrl}]]';
 
-                var flowTypes = ['code', 'implicit', 'hybrid'];
-                flowTypes.forEach(function (localFlowType) {
-                    $('#' + localFlowType + '-type').removeClass('btn-primary');
-                });
+            var query = (location.search) ? location.search : location.href.substring(location.href.indexOf('#')+1);
+            var urlParams = new URLSearchParams(query);
+            $('#access_token').val(urlParams.get("access_token"));
 
-                var flowType = getFlowType();
-                var flowIdx = flowTypes.indexOf(flowType);
-                if (flowIdx >= 0) {
-                    $('#' + flowType + '-type').addClass('btn-primary');
+            var gameSpaceArea = document.getElementById('game-space');
+            var gameSpace = CodeMirror.fromTextArea(gameSpaceArea, {
+                mode: 'javascript',
+                lineNumbers: true,
+                matchBrackets: true,
+                readOnly: true
+            });
+
+            var httpieArea = document.getElementById('httpie');
+            var httpie = CodeMirror.fromTextArea(httpieArea, {
+                mode: 'shell',
+                lineNumbers: true,
+                matchBrackets: true,
+                readOnly: true
+            });
+            httpie.setSize(null, 100);
+
+            var sendCommand = function (command) {
+                var ajaxOptions = {
+                    url: oktaZorkUrl + '/v1/c',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-Requested-With' , 'XMLHttpRequest');
+                        if ($("#bearer").is(':checked')) {
+                            xhr.setRequestHeader('Authorization' , 'Bearer ' + $('#access_token').val());
+                        }
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        gameSpace.setValue(JSON.stringify(response, null, '\t'));
+                        $('#command-line').val('');
+                        showHttpie();
+                    },
+                    error: function (response) {
+                        var error = {
+                            status: response.status
+                        };
+                        if (response.status == 401) {
+                            error.message = "UNAUTHORIZED";
+                        } else {
+                            error.message = "UNKNOWN";
+                        }
+                        gameSpace.setValue(JSON.stringify(error, null, '\t'));
+                    }
+                };
+                if (command) {
+                    ajaxOptions.data = JSON.stringify({command: command});
                 }
+                $.ajax(ajaxOptions)
             };
-            $('.response-type').click(flowTypeHandler);
-            $('.scope').click(buttonToggle);
+
+            var showHttpie = function () {
+                var val = 'http POST \\\n';
+                val += oktaZorkUrl + '/v1/c';
+                if ($('#command-line').val().trim()) {
+                    val += ' \\\ncommand="' + $('#command-line').val() + '"';
+                }
+                if ($("#bearer").is(':checked')) {
+                    val += ' \\\nAuthorization:"Bearer ' + $('#access_token').val() + '"';
+                }
+
+              httpie.setValue(val);
+            };
+
+            $('#zork-form').submit(function (e) {
+                e.preventDefault();
+                return false;
+            });
+
+            $('#command-line').keyup(function (e) {
+                showHttpie();
+                var command = $('#command-line').val().trim();
+                if (e.keyCode == 13) {
+                    sendCommand(command);
+                }
+            });
+
+            $("#bearer").click(function () {
+                showHttpie();
+            });
+
+            // prime the pump
+            if ($('#access_token').val()) {
+                showHttpie();
+                sendCommand();
+            }
+
         });
         /*]]>*/
     </script>
