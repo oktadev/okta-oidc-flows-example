@@ -2,7 +2,6 @@ package com.okta.oidcflows.controller;
 
 import com.okta.oidcflows.service.OIDCService;
 import org.apache.http.auth.AuthenticationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,8 +13,11 @@ import java.util.Map;
 @RestController
 public class ValidateController {
 
-    @Autowired
-    OIDCService oidcService;
+    private OIDCService oidcService;
+
+    public ValidateController(OIDCService oidcService) {
+        this.oidcService = oidcService;
+    }
 
     @RequestMapping("/userinfo")
     @ResponseBody Map<String, Object> userinfo(@RequestBody Map<String, String> requestParams) throws IOException {

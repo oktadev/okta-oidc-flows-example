@@ -1,6 +1,5 @@
 package com.okta.oidcflows.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -40,8 +39,11 @@ public class TenantConfig {
     @Value("#{ @environment['okta.org'] }")
     protected String oktaOrg;
 
-    @Autowired
-    Environment env;
+    private Environment env;
+
+    public TenantConfig(Environment env) {
+        this.env = env;
+    }
 
     private static Map<String, String> envMap;
 

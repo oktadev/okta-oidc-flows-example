@@ -1,7 +1,6 @@
 package com.okta.oidcflows.controller;
 
 import com.okta.oidcflows.config.TenantConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,8 +13,11 @@ import java.util.Map;
 @RestController
 public class TenantConfigController {
 
-    @Autowired
-    TenantConfig tenantConfig;
+    private TenantConfig tenantConfig;
+
+    public TenantConfigController(TenantConfig tenantConfig) {
+        this.tenantConfig = tenantConfig;
+    }
 
     @RequestMapping(value = "/get_config", method = RequestMethod.GET)
     public Map<String, String> getConfig() {

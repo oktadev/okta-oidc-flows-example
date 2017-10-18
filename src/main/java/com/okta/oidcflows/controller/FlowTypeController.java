@@ -3,7 +3,6 @@ package com.okta.oidcflows.controller;
 import com.okta.oidcflows.config.TenantConfig;
 import com.okta.oidcflows.service.OIDCService;
 import org.apache.http.auth.AuthenticationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,11 +16,13 @@ import java.util.stream.Collectors;
 @Controller
 public class FlowTypeController {
 
-    @Autowired
-    TenantConfig tenantConfig;
+    private TenantConfig tenantConfig;
+    private OIDCService oidcService;
 
-    @Autowired
-    OIDCService oidcService;
+    public FlowTypeController(TenantConfig tenantConfig, OIDCService oidcService) {
+        this.tenantConfig = tenantConfig;
+        this.oidcService = oidcService;
+    }
 
     @RequestMapping(value = TenantConfig.FLOW_REDIRECT_URI, method = RequestMethod.GET)
     public String showCode(HttpServletRequest req) {

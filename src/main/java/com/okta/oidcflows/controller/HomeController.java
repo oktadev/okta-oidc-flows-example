@@ -3,7 +3,6 @@ package com.okta.oidcflows.controller;
 import com.okta.oidcflows.config.TenantConfig;
 import com.okta.oidcflows.service.OIDCService;
 import com.okta.oidcflows.util.DashedStringGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +14,13 @@ import java.util.UUID;
 @Controller
 public class HomeController {
 
-    @Autowired
-    TenantConfig tenantConfig;
+    private TenantConfig tenantConfig;
+    private OIDCService oidcService;
 
-    @Autowired
-    OIDCService oidcService;
+    public HomeController(TenantConfig tenantConfig, OIDCService oidcService) {
+        this.tenantConfig = tenantConfig;
+        this.oidcService = oidcService;
+    }
 
     @RequestMapping("/")
     public String establishSession(HttpServletRequest req) throws IOException {

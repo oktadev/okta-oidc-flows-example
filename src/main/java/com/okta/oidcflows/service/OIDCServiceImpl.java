@@ -23,7 +23,6 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +43,11 @@ import java.util.UUID;
 @Service
 public class OIDCServiceImpl implements OIDCService {
 
+    private TenantConfig tenantConfig;
 
-    @Autowired
-    TenantConfig tenantConfig;
+    public OIDCServiceImpl(TenantConfig tenantConfig) {
+        this.tenantConfig = tenantConfig;
+    }
 
     private ObjectMapper mapper = new ObjectMapper();
     private CloseableHttpClient httpclient = HttpClients.createDefault();
