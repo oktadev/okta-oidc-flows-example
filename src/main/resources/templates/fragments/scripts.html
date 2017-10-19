@@ -353,7 +353,7 @@
 
             var sendCommand = function (command) {
                 var ajaxOptions = {
-                    url: oktaZorkUrl + '/v1/c',
+                    url: oktaZorkUrl + '/v1/game',
                     type: 'POST',
                     contentType: 'application/json; charset=utf-8',
                     beforeSend: function (xhr) {
@@ -388,7 +388,7 @@
 
             var showHttpie = function () {
                 var val = 'http POST \\\n';
-                val += oktaZorkUrl + '/v1/c';
+                val += oktaZorkUrl + '/v1/game';
                 if ($('#command-line').val().trim()) {
                     val += ' \\\ncommand="' + $('#command-line').val() + '"';
                 }
