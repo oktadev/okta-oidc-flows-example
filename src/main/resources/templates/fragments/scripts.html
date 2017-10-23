@@ -329,10 +329,12 @@
         /*<![CDATA[*/
         $(document).ready(function () {
             var oktaZorkUrl = '[[${oktaZorkUrl}]]';
+            var accessToken = $('#access_token');
+            var commandLine = $('#command-line');
 
             var query = (location.search) ? location.search : location.href.substring(location.href.indexOf('#')+1);
             var urlParams = new URLSearchParams(query);
-            $('#access_token').val(urlParams.get("access_token"));
+            accessToken.val(urlParams.get("access_token"));
 
             var gameSpaceArea = document.getElementById('game-space');
             var gameSpace = CodeMirror.fromTextArea(gameSpaceArea, {
@@ -372,7 +374,7 @@
                         var error = {
                             status: response.status
                         };
-                        if (response.status == 401) {
+                        if (response.status === 401) {
                             error.message = "UNAUTHORIZED";
                         } else {
                             error.message = "UNKNOWN";
@@ -389,7 +391,7 @@
             var showHttpie = function () {
                 var val = 'http POST \\\n';
                 val += oktaZorkUrl + '/v1/game';
-                if ($('#command-line').val().trim()) {
+                if (commandLine.val().trim()) {
                     val += ' \\\ncommand="' + $('#command-line').val() + '"';
                 }
                 if ($("#bearer").is(':checked')) {
@@ -404,10 +406,10 @@
                 return false;
             });
 
-            $('#command-line').keyup(function (e) {
+            commandLine.keyup(function (e) {
                 showHttpie();
                 var command = $('#command-line').val().trim();
-                if (e.keyCode == 13) {
+                if (e.keyCode === 13) {
                     sendCommand(command);
                 }
             });
@@ -417,11 +419,12 @@
             });
 
             // prime the pump
-            if ($('#access_token').val()) {
+            if (accessToken.val()) {
                 showHttpie();
                 sendCommand();
             }
 
+            commandLine.focus();
         });
         /*]]>*/
     </script>
