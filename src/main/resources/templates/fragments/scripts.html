@@ -354,38 +354,26 @@
             httpie.setSize(null, 100);
 
             var sendCommand = function (command) {
-                var ajaxOptions = {
+                $.ajax({
                     url: oktaZorkUrl + '/v1/game',
                     type: 'POST',
                     contentType: 'application/json; charset=utf-8',
                     beforeSend: function (xhr) {
-                        xhr.setRequestHeader('X-Requested-With' , 'XMLHttpRequest');
                         if ($("#bearer").is(':checked')) {
                             xhr.setRequestHeader('Authorization' , 'Bearer ' + $('#access_token').val());
                         }
                     },
                     dataType: 'json',
-                    success: function (response) {
-                        gameSpace.setValue(JSON.stringify(response, null, '\t'));
-                        $('#command-line').val('');
-                        showHttpie();
-                    },
-                    error: function (response) {
-                        var error = {
-                            status: response.status
-                        };
-                        if (response.status === 401) {
-                            error.message = "UNAUTHORIZED";
-                        } else {
-                            error.message = "UNKNOWN";
-                        }
-                        gameSpace.setValue(JSON.stringify(error, null, '\t'));
-                    }
-                };
-                if (command) {
-                    ajaxOptions.data = JSON.stringify({command: command});
-                }
-                $.ajax(ajaxOptions)
+                    data: (command) ? JSON.stringify({command: command}) : null
+                })
+                .done(function (data, textStatus, jqXHR) {
+                    gameSpace.setValue(JSON.stringify(data, null, '\t'));
+                    $('#command-line').val('');
+                    showHttpie();
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    gameSpace.setValue(JSON.stringify(jqXHR.responseJSON, null, '\t'));
+                });
             };
 
             var showHttpie = function () {
