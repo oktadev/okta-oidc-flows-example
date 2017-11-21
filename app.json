@@ -6,11 +6,11 @@
   "success_url": "/",
   "env": {
     "OKTA_ORG": {
-      "description": "The okta organization. ex: micah.okta.com",
+      "description": "The okta organization - ex: micah.okta.com",
       "value": "changeme"
     },
     "OKTA_AUTHORIZATION_SERVER_ID": {
-      "description": "The Okta authorization server id",
+      "description": "The Okta authorization server id - ex: aus9vmork8ww5twZg0h7",
       "value": "changeme"
     },
     "OKTA_OIDC_CLIENT_ID": {
@@ -28,6 +28,10 @@
     "OKTA_SESSION_PASSWORD": {
       "description": "The password of the user that the app will establish a session as",
       "value": "changeme"
+    },
+    "OKTA_ZORK_URL": {
+      "description": "The URL to where the Zork game is hosted. Leave blank if unsure.",
+      "value": ""
     }
   }
 }
