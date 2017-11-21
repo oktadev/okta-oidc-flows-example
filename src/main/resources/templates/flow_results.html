@@ -56,7 +56,7 @@
                             <div class="col-md-3 val-token">
                                 <button class="btn btn-primary introspect">Validate Access Token</button><p/>
                                 <button class="btn btn-primary userinfo">/userinfo</button><p/>
-                                <a href="/zork" class="btn btn-primary zork" target="_blank">Game With Your Access Token</a>
+                                <a th:if="${oktaZorkUrl}" href="/zork" class="btn btn-primary zork" target="_blank">Game With Your Access Token</a>
                             </div>
                         </div>
 
