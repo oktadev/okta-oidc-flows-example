@@ -1,7 +1,15 @@
-## Okta OpenID Connect Fun!
+# Okta OpenID Connect sandbox example
 
-This is a Spring Boot project that demonstrates various OIDC flows using
+This is a Spring Boot project that demonstrates various OpenID Connect flows using
 configurable response types and scopes.
+
+If you want to learn more about OpenID Connect, read the article series that accompanies this example:
+
+* [Identity, Claims, & Tokens – An OpenID Connect Primer, Part 1 of 3](https://developer.okta.com/blog/2017/07/25/oidc-primer-part-1)
+* [OIDC in Action – An OpenID Connect Primer, Part 2 of 3](https://developer.okta.com/blog/2017/07/25/oidc-primer-part-2)
+* [What’s in a Token? – An OpenID Connect Primer, Part 3 of 3](https://developer.okta.com/blog/2017/08/01/oidc-primer-part-3)
+
+## Try it out
 
 Go to the live example at 
 [https://okta-oidc-fun.herokuapp.com](https://okta-oidc-fun.herokuapp.com).
@@ -9,6 +17,8 @@ Go to the live example at
 You can exchange an authorizaton code for tokens.
 
 And, you can validate access and id tokens.
+
+## Deploy it yourself
 
 Want to run this app in your own Heroku instance? Click below:
 
@@ -19,7 +29,7 @@ You'll need to supply values for the following environment variables:
 | Environment Variable         | Description                                                                                                           |
 |------------------------------|-----------------------------------------------------------------------------------------------------------------------|
 | OKTA_ORG                     | The okta organization - ex: micah.okta.com                                                                            |
-| OKTA_AUTHORIZATION_SERVER_ID | The Okta authorization server id - ex: aus9vmork8ww5twZg0h7                                                           |
+| OKTA_AUTHORIZATION_SERVER_ID | The Okta authorization server id - ex: `default`                                                           |
 | OKTA_OIDC_CLIENT_ID          | The Okta OIDC application client id                                                                                   |
 | OKTA_OIDC_CLIENT_SECRET      | The Okta OIDC application client secret                                                                               |
 | OKTA_SESSION_USERNAME        | The email address of the user that the app will establish a session as                                                |
@@ -45,5 +55,10 @@ https://okta-oidc-fun.herokuapp.com/continue
 https://okta-oidc-fun.herokuapp.com/flow_result
 ```
 
-Go to the live example at 
-[https://okta-oidc-fun.herokuapp.com](https://okta-oidc-fun.herokuapp.com).
+## Help
+
+Please post any questions on our [Okta Developer Forums](https://devforum.okta.com/). You can also email developers@okta.com if you would like to create a support ticket.
+
+## License
+
+Apache 2.0, see [LICENSE](LICENSE).
