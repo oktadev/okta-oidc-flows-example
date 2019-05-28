@@ -31,7 +31,8 @@
     },
     "OKTA_ZORK_URL": {
       "description": "The URL to where the Zork game is hosted. Leave blank if unsure.",
-      "value": ""
+      "value": "",
+      "required": false
     }
   }
 }
